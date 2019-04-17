@@ -41,7 +41,7 @@ namespace SqliteAgent {
             if (!File.Exists(databaseFullPath)) {
                 SQLiteConnection.CreateFile(databaseFullPath);
             }
-            conn = new SQLiteConnection("Data Source=" + databaseFullPath + ";Version=1;");
+            conn = new SQLiteConnection("Data Source=" + databaseFullPath + ";Version=3;");
             conn.Open();
         }
 
@@ -52,7 +52,7 @@ namespace SqliteAgent {
             string sql = "create table if not exists " + tableInfo.tableName + " (";
             foreach (ColumnInfo info in tableInfo.columnList) {
                 if (info.primaryKey) {
-                    sql += info.columnName + " " + info.dataType.ToString() + "primary key ,";
+                    sql += info.columnName + " " + info.dataType.ToString() + " primary key ,";
                 } else {
                     sql += info.columnName + " " + info.dataType.ToString() + ",";
                 }
@@ -62,13 +62,8 @@ namespace SqliteAgent {
             new SQLiteCommand(sql, conn).ExecuteNonQuery();
         }
 
-        public void createStockTable(string code) {
-            string sql = "create table if not exists " + code + " (date char(8) primary key, open int, high int, low int, close int, vol int)";
-            new SQLiteCommand(sql, conn).ExecuteNonQuery();
-        }
-
-        public void addStockChartData(string code, int open, int high, int low, int close, long volume) {
-
+        public void destroy() {
+            conn.Close();
         }
     }
 }
